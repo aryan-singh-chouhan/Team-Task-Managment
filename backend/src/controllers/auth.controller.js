@@ -4,11 +4,20 @@ import { generateToken } from '../utils/jwt.utils.js';
 import { hashPassword, comparePassword } from '../utils/hash.utils.js';
 import { successResponse, errorResponse } from '../utils/response.utils.js';
 
+const isProduction = process.env.NODE_ENV === 'production';
+const sameSite = process.env.COOKIE_SAME_SITE || (isProduction ? 'none' : 'lax');
+
 const cookieOptions = {
 	httpOnly: true,
-	secure: process.env.NODE_ENV === 'production',
-	sameSite: 'strict',
+	secure: isProduction,
+	sameSite,
+	path: '/',
 	maxAge: 7 * 24 * 60 * 60 * 1000,
+};
+
+const clearCookieOptions = {
+	...cookieOptions,
+	maxAge: undefined,
 };
 
 async function register(req, res) {
@@ -70,7 +79,7 @@ async function login(req, res) {
 
 async function logout(req, res) {
 	try {
-		res.clearCookie('token');
+		res.clearCookie('token', clearCookieOptions);
 		return successResponse(res, 'Logged out successfully', null);
 	} catch (error) {
 		return errorResponse(res, 'Logout failed', 500);

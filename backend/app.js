@@ -15,6 +15,11 @@ import userRoutes from './src/routes/user.routes.js';
 
 const app = express();
 
+const allowedOrigins = (process.env.CLIENT_URL || '')
+	.split(',')
+	.map(origin => origin.trim())
+	.filter(Boolean);
+
 const authLimiter = rateLimit({
 	windowMs: 15 * 60 * 1000,
 	max: 60,
@@ -30,9 +35,21 @@ const globalLimiter = rateLimit({
 app.use(helmet());
 app.use('/api/', globalLimiter);
 
+app.set('trust proxy', 1);
+
 app.use(
 	cors({
-		origin: process.env.CLIENT_URL,
+		origin: (origin, callback) => {
+			if (!origin) {
+				return callback(null, true);
+			}
+
+			if (allowedOrigins.includes(origin)) {
+				return callback(null, true);
+			}
+
+			return callback(new Error(`CORS blocked for origin: ${origin}`));
+		},
 		credentials: true,
 	})
 );
