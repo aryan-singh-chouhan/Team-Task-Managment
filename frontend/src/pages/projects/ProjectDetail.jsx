@@ -1,10 +1,10 @@
-import { useLayoutEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useProjects } from '../../hooks/useProjects';
 import { useTasks } from '../../hooks/useTasks';
 import useAuth from '../../hooks/useAuth';
-import PageSkeleton from '../../components/common/PageSkeleton';
+import Loader from '../../components/common/Loader';
 import Modal from '../../components/common/Modal';
 import Button from '../../components/common/Button';
 import Badge from '../../components/common/Badge';
@@ -54,7 +54,7 @@ export const ProjectDetail = () => {
   const members = project?.members ?? [];
   const currentUserId = user?.id ?? user?._id;
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (id) {
       loadProject(id);
       loadTasks(id);
@@ -157,6 +157,7 @@ export const ProjectDetail = () => {
     return normalizeTaskStatus(task.status) === normalizeTaskStatus(taskFilter);
   });
 
+  // Ensure non-admin members only see tasks assigned to them as a client-side safeguard
   const displayedTasks = isAdmin ? filteredTasks : filteredTasks.filter(t => String(t.assigned_to) === String(currentUserId));
 
   // Render page layout immediately; show section-level loaders when data is loading
@@ -168,11 +169,6 @@ export const ProjectDetail = () => {
     }
     return <div className="text-center text-red-500 p-8">Error loading project: {projectError}</div>;
   }
-
-  if (!project) {
-    return <PageSkeleton variant="project-detail" />;
-  }
-
   if (!project) return null; // Or a not found component
 
   return (
@@ -184,8 +180,14 @@ export const ProjectDetail = () => {
         </Link>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{project.name}</h1>
-            <Badge color={isAdmin ? 'green' : 'blue'}>{isAdmin ? 'Admin' : 'Member'}</Badge>
+            {projectLoading ? (
+              <div className="animate-pulse">
+                <div className="h-8 w-56 bg-slate-200 rounded-md mb-2" />
+              </div>
+            ) : (
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{project.name}</h1>
+            )}
+            {!projectLoading && <Badge color={isAdmin ? 'green' : 'blue'}>{isAdmin ? 'Admin' : 'Member'}</Badge>}
           </div>
           {isAdmin && (
             <div className="flex items-center gap-2 mt-3 sm:mt-0">
@@ -198,11 +200,18 @@ export const ProjectDetail = () => {
             </div>
           )}
         </div>
-        {project.description && (
-          <p className="mt-2 text-slate-500 text-sm sm:text-base">{project.description}</p>
+        {projectLoading ? (
+          <div className="mt-2">
+            <div className="h-3 w-80 bg-slate-200 rounded-md animate-pulse" />
+          </div>
+        ) : (
+          project.description && (
+            <p className="mt-2 text-slate-500 text-sm sm:text-base">{project.description}</p>
+          )
         )}
       </div>
 
+      {/* Members */}
       <div className="mb-5">
         <MemberList
           members={members}
@@ -239,6 +248,7 @@ export const ProjectDetail = () => {
         />
       </div>
 
+      {/* Tasks */}
       <div>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
           <h2 className="text-lg font-semibold text-slate-900">Tasks ({displayedTasks.length})</h2>
@@ -264,8 +274,10 @@ export const ProjectDetail = () => {
             )}
           </div>
         </div>
-        {tasksLoading && !displayedTasks.length ? (
-          <PageSkeleton variant="tasks" />
+        {tasksLoading ? (
+          <div className="min-h-[240px] flex items-center justify-center p-8">
+            <Loader />
+          </div>
         ) : (
           <TaskBoard
             tasks={displayedTasks}
@@ -278,6 +290,7 @@ export const ProjectDetail = () => {
         )}
       </div>
 
+      {/* Task Modal */}
       <Modal
         isOpen={isTaskModalOpen}
         onClose={() => {
@@ -296,6 +309,7 @@ export const ProjectDetail = () => {
         />
       </Modal>
 
+      {/* Edit Project Modal */}
       <Modal
         isOpen={isEditProjectOpen}
         onClose={() => setIsEditProjectOpen(false)}
