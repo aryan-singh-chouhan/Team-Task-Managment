@@ -27,7 +27,7 @@ export const Projects = () => {
 
   useLayoutEffect(() => {
     loadProjects();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); 
 
   const filteredProjects = useMemo(() => {
     if (roleFilter === 'all') {

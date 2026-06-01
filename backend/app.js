@@ -1,11 +1,9 @@
 import 'dotenv/config';
-
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-
 import { errorResponse } from './src/utils/response.utils.js';
 import authRoutes from './src/routes/auth.routes.js';
 import projectRoutes from './src/routes/project.routes.js';

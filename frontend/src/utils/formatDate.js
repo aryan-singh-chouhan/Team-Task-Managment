@@ -25,7 +25,7 @@ export const isOverdue = (dueDateString) => {
   try {
     const dueDate = parseISO(dueDateString);
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Compare with the start of today
+    today.setHours(0, 0, 0, 0); 
     return dueDate < today;
   } catch (error) {
     return false;

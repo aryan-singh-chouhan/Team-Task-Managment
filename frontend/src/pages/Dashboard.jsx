@@ -2,7 +2,6 @@ import { useLayoutEffect, useMemo, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import { FolderKanban, CheckSquare, Clock, AlertTriangle, Sparkles } from 'lucide-react';
-
 import {
   fetchDashboard,
   selectDashboardStats,

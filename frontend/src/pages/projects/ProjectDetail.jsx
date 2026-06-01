@@ -63,7 +63,6 @@ export const ProjectDetail = () => {
       clearProject();
       clearProjectTasks();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const isAdmin = project?.my_role === 'admin';
@@ -157,19 +156,16 @@ export const ProjectDetail = () => {
     return normalizeTaskStatus(task.status) === normalizeTaskStatus(taskFilter);
   });
 
-  // Ensure non-admin members only see tasks assigned to them as a client-side safeguard
   const displayedTasks = isAdmin ? filteredTasks : filteredTasks.filter(t => String(t.assigned_to) === String(currentUserId));
 
-  // Render page layout immediately; show section-level loaders when data is loading
   if (projectError) {
-    // Assuming 404 is returned for not found
     if (projectError.includes('404')) {
         navigate('/projects');
         return null;
     }
     return <div className="text-center text-red-500 p-8">Error loading project: {projectError}</div>;
   }
-  if (!project) return null; // Or a not found component
+  if (!project) return null;
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 pt-2 pb-6">
@@ -211,7 +207,6 @@ export const ProjectDetail = () => {
         )}
       </div>
 
-      {/* Members */}
       <div className="mb-5">
         <MemberList
           members={members}
@@ -248,7 +243,6 @@ export const ProjectDetail = () => {
         />
       </div>
 
-      {/* Tasks */}
       <div>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
           <h2 className="text-lg font-semibold text-slate-900">Tasks ({displayedTasks.length})</h2>
@@ -290,7 +284,6 @@ export const ProjectDetail = () => {
         )}
       </div>
 
-      {/* Task Modal */}
       <Modal
         isOpen={isTaskModalOpen}
         onClose={() => {
@@ -309,7 +302,6 @@ export const ProjectDetail = () => {
         />
       </Modal>
 
-      {/* Edit Project Modal */}
       <Modal
         isOpen={isEditProjectOpen}
         onClose={() => setIsEditProjectOpen(false)}

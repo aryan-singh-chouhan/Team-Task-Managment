@@ -16,12 +16,8 @@ const initialState = {
 };
 
 export const fetchDashboard = createAsyncThunk('dashboard/fetchDashboard', async () => {
-  // `dashboardApi.getDashboard()` already returns `response.data` (the payload),
-  // so return it directly here to avoid `undefined` payloads in the reducer.
+
   const payload = await dashboardApi.getDashboard();
-  // backend returns { success, message, data }, and dashboardApi.getDashboard()
-  // returns that object. We need to return the inner `data` so reducers get
-  // { stats, status_breakdown, recent_tasks, overdue_list } as expected.
   return payload.data;
 });
 

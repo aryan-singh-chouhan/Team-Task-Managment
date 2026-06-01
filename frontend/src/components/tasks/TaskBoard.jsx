@@ -26,13 +26,11 @@ const TAB_COLORS = {
 };
 
 const TaskBoard = React.memo(({ tasks, onStatusChange, onEdit, onDelete, currentUserId, isAdmin, taskFilter, showTabs = true }) => {
-  // default to 'all' so users see all tasks initially
+
   const [activeTab, setActiveTab] = useState('all');
 
-  // Sync active tab with parent filter when provided
   React.useEffect(() => {
     if (!taskFilter) return;
-    // normalize incoming filter values (e.g., 'in-progress' -> 'in_progress')
     const normalized = String(taskFilter).trim().toLowerCase().replace(/[-\s]+/g, '_');
     if (normalized === 'all') {
       setActiveTab('all');

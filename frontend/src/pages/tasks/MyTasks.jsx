@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { CheckSquare, AlertTriangle } from 'lucide-react';
-
 import { getMyTasks, deleteTask, updateTaskStatus, updateTask } from '../../api/task.api';
 import TaskBoard from '../../components/tasks/TaskBoard';
 import TaskForm from '../../components/tasks/TaskForm';

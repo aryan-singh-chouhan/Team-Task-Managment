@@ -29,7 +29,7 @@ const ProjectCard = React.memo(({ project, onDelete, index = 0 }) => {
   return (
     <Link to={`/projects/${id}`} className="block group animate-card-in" style={{ animationDelay: `${gradientIdx * 60}ms` }}>
       <div className={`project-card h-full flex flex-col ${BG_HOVER_TINTS[gradientIdx]}`}>
-        {/* Gradient top bar */}
+
         <div
           className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl transition-all duration-300 group-hover:h-1.5"
           style={{ background: GRADIENT_ACCENTS[gradientIdx] }}
