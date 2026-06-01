@@ -235,7 +235,3 @@ Both frontend and backend are deployed on **Railway**.
 GitHub: https://github.com/aryan-singh-chouhan
 
 ---
-
-## License
-
-This project was built as a full-stack assessment. Feel free to use it as reference.
